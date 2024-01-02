@@ -1,9 +1,9 @@
-
 import { createStore } from 'vuex';
 
 const store = createStore({
   state: {
     token: null,
+    user: null,
   },
   mutations: {
     setToken(state, token) {
@@ -11,6 +11,9 @@ const store = createStore({
     },
     clearToken(state) {
       state.token = null;
+    },
+    setUser(state, user) {
+      state.user = user;
     },
   },
   actions: {
@@ -20,9 +23,13 @@ const store = createStore({
     clearToken({ commit }) {
       commit('clearToken');
     },
+    setUser({ commit }, user) {
+      commit('setUser', user);
+    },
   },
   getters: {
     getToken: (state) => state.token,
+    getUser: (state) => state.user,
   },
 });
 

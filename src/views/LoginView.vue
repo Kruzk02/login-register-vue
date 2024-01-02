@@ -42,7 +42,7 @@ export default {
         };
     },
     created() {
-        if (localStorage.getItem('token')) {
+        if (this.$store.getters.getToken) {
             this.$router.push('/');
         }
     },
@@ -54,7 +54,7 @@ export default {
                     password: this.password,
                 };
                 const response = await axios.post('http://localhost:8080/api/login',payload)
-                localStorage.setItem('token', response.data.token)
+                this.$store.dispatch('setToken', response.data.token);
                 this.$router.push('/dashboard')
             }catch(error){
                 this.validationErrors = "Invalid Username or Password.Please try again"

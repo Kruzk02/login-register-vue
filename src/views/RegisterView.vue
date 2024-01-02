@@ -45,7 +45,7 @@ import axios from 'axios'
       }
     },
     created(){
-      if(localStorage.getItem('token')){
+      if(this.$store.getters.getToken){
         this.$router.push('/login')
       }
     },
@@ -58,7 +58,7 @@ import axios from 'axios'
             password: this.password
           }
           const response = await axios.post('http://localhost:8080/api/signup',payload)
-          localStorage.setItem('token',response.data.token)
+          this.$store.dispatch('setToken', response.data.token);
           this.$router.push('/login')
         }catch(error){
           this.validationErrors = error.response.data.errors

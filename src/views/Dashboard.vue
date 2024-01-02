@@ -31,12 +31,15 @@ import axios from 'axios';
 export default {
     data(){
         return{
-            user:"",
+        }
+    },
+    computed:{
+        user(){
+            return this.$store.getters.getUser;
         }
     },
     created(){
-        this.getUser();
-        if(localStorage.getItem('token') == "" || localStorage.getItem('token') == null){
+        if(!this.$store.getters.getToken){
             this.$router.push('/');
         }else{
             this.getUser();
@@ -44,9 +47,9 @@ export default {
     },
     methods: {
         getUser(){
-            axios.get('http://localhost:8080/api/get-username', { headers:{Authorization: 'Bearer '+localStorage.getItem('token')}})
+            axios.get('http://localhost:8080/api/get-username', { headers:{Authorization: 'Bearer '+this.$store.getters.getToken }})
             .then((r) => {
-                this.user = r.data;
+                this.$store.dispatch('setUser', r.data);
                 return r
             })
             .catch((e) => {
@@ -54,10 +57,11 @@ export default {
             });
         },
         logout(){
-            axios.post('http://localhost:8080/api/logout',{}, { headers:{Authorization: 'Bearer '+localStorage.getItem('token')}})
+            axios.post('http://localhost:8080/api/logout',{}, { headers:{Authorization: 'Bearer '+this.$store.getters.getToken}})
             .then((r) => {
-                localStorage.setItem('token', "")
-                this.$router.push('/')
+                this.$store.dispatch('clearToken');
+                this.$store.dispatch('setUser', null);
+                this.$router.push('/');
                 return r
             })
             .catch((e) => {
