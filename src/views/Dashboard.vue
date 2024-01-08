@@ -23,6 +23,7 @@
     </nav>
 </div>
 <h2 class="text-center mt-5">Welcome, {{user}}!</h2  >
+<button @click="refreshToken()">Refresh Token</button>
 </template>
 
 <script>
@@ -55,6 +56,16 @@ export default {
             .catch((e) => {
                 return e
             });
+        },
+        refreshToken(){
+            axios.post('http://localhost:8080/api/refresh',{},{headers:{Authorization: 'Bearer '+this.$store.getters.getToken}})  
+            .then((r)=>{
+                this.$store.dispatch('setToken',r.data);
+                return r
+            })
+            .catch((e)=>{
+                return e
+            })
         },
         logout(){
             axios.post('http://localhost:8080/api/logout',{}, { headers:{Authorization: 'Bearer '+this.$store.getters.getToken}})
