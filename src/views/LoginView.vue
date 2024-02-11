@@ -55,7 +55,7 @@ export default {
                 };
                 const response = await axios.post('http://localhost:8080/api/login',payload)
                 this.$store.dispatch('setToken', response.data.token);
-                this.$router.push('/dashboard')
+                this.$router.push('/')
             }catch(error){
                 this.validationErrors = "Invalid Username or Password.Please try again"
             }
