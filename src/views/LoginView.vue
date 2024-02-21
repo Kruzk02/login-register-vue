@@ -23,6 +23,7 @@
                       Don’t have an account yet? 
                       <router-link to="/register" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</router-link>
                     </p>
+                    <GoogleLogin :callback="callback" prompt/>
                 </form>
             </div>
         </div>
@@ -30,15 +31,35 @@
 </section>
 </template>
 
+<script setup>
+import { onMounted } from "vue"
+import { googleOneTap } from "vue3-google-login"
+import { decodeCredential } from 'vue3-google-login'
+
+const store = useStore();
+onMounted(() => {
+  googleOneTap({autoLogin:true})
+    .then((response) => {
+        const userData = decodeCredential(response.credential)
+        console.log("Handle the userData", userData)
+    })
+    .catch((error) => {
+        console.log("Handle the error", error)
+    })
+})
+
+</script>
+
 <script>
 import axios from 'axios';
+import { GoogleLogin } from 'vue3-google-login';
 
 export default {
     data() {
         return {
-        username: '',
-        password: '',
-        validationErrors: '',
+            username: '',
+            password: '',
+            validationErrors: '',
         };
     },
     created() {
@@ -48,18 +69,20 @@ export default {
     },
     methods: {
         async login() {
-            try{
+            try {
                 const payload = {
                     username: this.username,
                     password: this.password,
                 };
-                const response = await axios.post('http://localhost:8080/api/login',payload)
+                const response = await axios.post('http://localhost:8080/api/login', payload);
                 this.$store.dispatch('setToken', response.data.token);
-                this.$router.push('/')
-            }catch(error){
-                this.validationErrors = "Invalid Username or Password.Please try again"
+                this.$router.push('/');
+            }
+            catch (error) {
+                this.validationErrors = "Invalid Username or Password.Please try again";
             }
         },
     },
+    components: { GoogleLogin }
 };
 </script>
